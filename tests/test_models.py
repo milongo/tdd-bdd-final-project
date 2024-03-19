@@ -104,3 +104,103 @@ class TestProductModel(unittest.TestCase):
     #
     # ADD YOUR TEST CASES HERE
     #
+
+    def read_a_product(self):
+        """It reads a thingy."""
+
+        product = ProductFactory()
+        product.id = None
+        product.create()
+        self.assertIsNotNone(product.id)
+        products = Product.all()
+        first_product = products[0]
+        self.assertEqual(first_product.id, product.id)
+        self.assertEqual(first_product.description, product.description)
+
+    def test_update_a_product(self):
+        """It updates a thingy."""
+        product = ProductFactory()
+        product.id = None
+        product.create()
+        self.assertIsNotNone(product.id)
+        original_id = product.id
+        product.description = "Something important here"
+        product.update()
+        self.assertEqual(original_id, product.id)
+        self.assertEqual(product.description, "Something important here")
+        products = Product.all()
+        self.assertEqual(len(products), 1)
+        self.assertEqual(products[0].id, original_id)
+        self.assertEqual(products[0].description, "Something important here")
+
+    def test_delete_a_product(self):
+        """It deletes a thingy."""
+        product = ProductFactory()
+        product.create()
+        self.assertEqual(len(Product.all()), 1)
+        product.delete()
+        self.assertEqual(len(Product.all()), 0)
+
+    def test_list_all_products(self):
+        """It lists the thingies."""
+        self.assertEqual(len(Product.all()), 0)
+        for _ in range(5):
+            product = ProductFactory()
+            product.create()
+
+        self.assertEqual(len(Product.all()), 5)
+
+    def test_find_by_availability(self):
+        """It finds by availability the thingies."""
+
+        for _ in range(10):
+            product = ProductFactory()
+            product.create()
+        products = Product.all()
+        first_product_availability = products[0].available
+        count = len([product.available for product in products if product.available == first_product_availability])
+        found = product.find_by_availability(first_product_availability)
+        self.assertEqual(found.count(), count)
+        for product in found:
+            self.assertEqual(product.available, first_product_availability)
+
+    def test_find_by_category(self):
+        """It finds by category the thingy."""
+        for _ in range(10):
+            product = ProductFactory()
+            product.create()
+        products = Product.all()
+        first_product_category = products[0].category
+        count = len([product.category for product in products if product.category == first_product_category])
+        found = Product.find_by_category(first_product_category)
+        self.assertEqual(found.count(), count)
+        for product in found:
+            self.assertEqual(product.category, first_product_category)
+
+    def test_find_by_id(self):
+        """It finds a thingy by its id."""
+        product = ProductFactory()
+        product.create()
+        found_product = product.find(product.id)
+        self.assertEqual(found_product.id, product.id)
+
+    def test_find_by_name(self):
+        """Find a thingy by its name."""
+        product = ProductFactory()
+        product.create()
+        found_product = product.find_by_name(product.name)[0]
+        self.assertEqual(found_product.name, product.name)
+
+    def test_find_by_price(self):
+        """Finds a thingy by its price."""
+        product = ProductFactory()
+        product.create()
+        found_product = product.find_by_price(product.price)[0]
+        self.assertEqual(found_product.price, product.price)
+
+    def test_price_str(self):
+        """It finds a thingy by price string."""
+        product = ProductFactory()
+        product.create()
+        found_product = product.find_by_price(str(product.price))[0]
+        self.assertEqual(found_product.price, product.price)
