@@ -108,7 +108,8 @@ def step_impl(context, element_name):
 @when('I press the "{button}" button')
 def step_impl(context, button):
     button_id = button.lower() + '-btn'
-    context.driver.find_element_by_id(button_id).click()
+    element = context.driver.find_element_by_id(button_id)
+    element.click()
 
 @then('I should see "{name}" in the results')
 def step_impl(context, name):
@@ -128,7 +129,7 @@ def step_impl(context, message):
             message
         )
     )
-    assert(found)
+    assert found
 ##################################################################
 # This code works because of the following naming convention:
 # The id field for text input in the html is the element name
