@@ -146,7 +146,7 @@ def list_products():
 #
 @app.route("/products/<product_id>", methods=["GET"])
 def get_products(product_id):
-
+    """Get a product by id."""
     product = Product.find(product_id)
     if not product:
         return abort(status.HTTP_404_NOT_FOUND)
@@ -165,6 +165,7 @@ def get_products(product_id):
 
 @app.route("/products/<product_id>", methods=["PUT"])
 def update_product(product_id):
+    """Update a product by id."""
     check_content_type("application/json")
     data = request.get_json()
     product = Product.find(product_id)
@@ -186,6 +187,7 @@ def update_product(product_id):
 
 @app.route("/products/<int:product_id>", methods=["DELETE"])
 def delete_products(product_id):
+    """Delete a product by id."""
     product = Product.find(product_id)
     if product:
         product.delete()
